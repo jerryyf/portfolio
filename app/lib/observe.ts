@@ -11,8 +11,6 @@ import { triggerLambda } from './lambda'
     let res = await fetch(url + '/' + ip)
     let data = await res.json()
 
-    // kube-probe is a health check that runs on Kubernetes
-    // We don't want to trigger the lambda function for this
     if (userAgent.includes('kube-probe')) {
         return
     }
