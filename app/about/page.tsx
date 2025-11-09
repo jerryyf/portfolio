@@ -1,5 +1,3 @@
-import CredlyBadge from 'app/components/credlyBadge'
-
 export const metadata = {
   title: 'about',
   description: 'About me.',
@@ -13,7 +11,7 @@ export default function Page() {
         {`Bachelor of Computer Science - Security Engineering`}
       </p>
       <p className="mb-4 font-mono">
-        {`Email: contact [at] jerryyf [dot] dev`}
+        {`Enqueries: noreply [at] jerryyf [dot] dev`}
       </p>
     </section>
   )
