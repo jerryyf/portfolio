@@ -16,7 +16,8 @@ const CredlyBadge = ({ badgeId }) => {
   }, [])
 
   return (
-    <div>
+    // TODO fix particles rendering over the top
+    <div className='bg-white'>
       <div 
         data-iframe-width="150"
         data-iframe-height="270"
