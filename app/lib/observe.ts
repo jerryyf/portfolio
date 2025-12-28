@@ -3,9 +3,9 @@ import { triggerLambda } from './lambda'
   
   export async function observe() {
     const headersList = headers()
-    const forwardedFor = headersList.get('x-forwarded-for') || ''
+    const forwardedFor = (await headersList).get('x-forwarded-for') || ''
     const ip = forwardedFor.split(',')[0]
-    const userAgent = headersList.get('User-Agent') || 'error'
+    const userAgent = (await headersList).get('User-Agent') || 'error'
 
     const url = 'http://ip-api.com/json'
     let res = await fetch(url + '/' + ip)
