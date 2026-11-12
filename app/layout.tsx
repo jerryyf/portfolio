@@ -1,8 +1,6 @@
 import './global.css'
 import type { Metadata } from 'next'
-import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
-import { Navbar } from './components/nav'
 import Footer from './components/footer'
 import { baseUrl } from './sitemap'
 
@@ -12,10 +10,10 @@ export const metadata: Metadata = {
     default: 'jerryyf.dev',
     template: '%s | jerryyf.dev',
   },
-  description: 'welcome to my landing page',
+  description: 'The personal terminal of jerryyf. Platform engineer. Security first. Vim enjoyer.',
   openGraph: {
     title: 'jerryyf.dev',
-    description: 'welcome to my landing page',
+    description: 'The personal terminal of jerryyf. Platform engineer. Security first. Vim enjoyer.',
     url: baseUrl,
     siteName: 'jerryyf.dev',
     locale: 'en_US',
@@ -34,8 +32,6 @@ export const metadata: Metadata = {
   },
 }
 
-const cx = (...classes) => classes.filter(Boolean).join(' ')
-
 export default function RootLayout({
   children,
 }: {
@@ -44,16 +40,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cx(
-        'text-white black dark:text-white dark:black',
-        GeistSans.variable,
-        GeistMono.variable
-      )}
+      className={GeistMono.variable}
     >
-      <body className="antialiased max-w-xl mx-4 mt-8 lg:mx-auto">
-        <main className="flex-auto min-w-0 mt-6 flex flex-col px-2 md:px-0">
-          <Navbar />
-          {children}
+      <body>
+        <a className="skip-link" href="#terminal">Skip to terminal</a>
+        <main className="monitor">
+          <div className="screen-surround" id="terminal" tabIndex={-1}>{children}</div>
           <Footer />
         </main>
       </body>
