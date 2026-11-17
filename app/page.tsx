@@ -2,9 +2,23 @@ import { TypeWriter } from './components/typewriter'
 import { Background } from './components/background'
 import CredlyBadge from 'app/components/credlyBadge'
 import { observe } from './lib/observe'
+import { headers } from 'next/headers'
+import { after } from 'next/server'
 
-export default function Page() {
-  observe()
+export default async function Page() {
+  const headersList = await headers()
+  const forwardedFor = headersList.get('x-forwarded-for') || ''
+  const ip = forwardedFor.split(',')[0].trim()
+  const userAgent = headersList.get('user-agent') || 'error'
+
+  after(async () => {
+    try {
+      await observe(ip, userAgent)
+    } catch (error) {
+      console.error('Failed to send visit notification', error)
+    }
+  })
+
   return (
     <section className="-scroll-mt-px flex-grow font-mono">
       <Background />
@@ -28,7 +42,6 @@ export default function Page() {
             <CredlyBadge badgeId={"d2fedfdd-09ec-4f56-a472-e7e0f9a529eb"} />
           </div>
         </div>
-      <script src="https://cdn.jsdelivr.net/npm/@tsparticles/preset-links@3/tsparticles.preset.links.min.js"></script>
     </section>
   )
 }

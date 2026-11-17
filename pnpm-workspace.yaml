@@ -1,4 +1,9 @@
 allowBuilds:
-  '@tsparticles/engine': true
-  aws-sdk: true
+  '@tsparticles/engine': false
   sharp: true
+minimumReleaseAgeExclude:
+  - baseline-browser-mapping@2.11.0
+  - source-map-js@1.2.2
+overrides:
+  baseline-browser-mapping@>=2.0.0 <2.11.0: ^2.11.0
+  source-map-js@>=1.0.0 <1.2.2: ^1.2.2
