@@ -1,22 +1,30 @@
-import { headers } from 'next/headers'
-import { triggerLambda } from './lambda'
-  
-  export async function observe() {
-    const headersList = headers()
-    const forwardedFor = (await headersList).get('x-forwarded-for') || ''
-    const ip = forwardedFor.split(',')[0]
-    const userAgent = (await headersList).get('User-Agent') || 'error'
+import { sendVisitNotification, type VisitorDetails } from './telegram'
 
-    const url = 'http://ip-api.com/json'
-    let res = await fetch(url + '/' + ip)
-    let data = await res.json()
+type GeoLookup = {
+  status: string
+  country?: string
+  regionName?: string
+  city?: string
+  zip?: string
+  lat?: number
+  lon?: number
+  timezone?: string
+  isp?: string
+  org?: string
+  query?: string
+}
 
-    if (userAgent.includes('kube-probe')) {
-        return
-    }
+export async function observe(ip: string, userAgent: string) {
+  if (userAgent.includes('kube-probe')) {
+    return
+  }
 
-    if (data.status != 'fail') {
-      let payload = {
+  const response = await fetch(`http://ip-api.com/json/${encodeURIComponent(ip)}`)
+  const data = (await response.json()) as GeoLookup
+
+  const visitor: VisitorDetails = data.status === 'fail'
+    ? { status: data.status, ip, userAgent }
+    : {
         status: data.status,
         country: data.country,
         region: data.regionName,
@@ -27,17 +35,9 @@ import { triggerLambda } from './lambda'
         timezone: data.timezone,
         isp: data.isp,
         org: data.org,
-        ip: data.query,
-        userAgent: userAgent
+        ip: data.query || ip,
+        userAgent,
       }
-      triggerLambda(payload)
-    }
-    else {
-        let payload = {
-            status: data.status,
-            ip: ip,
-            userAgent: userAgent
-        }
-        triggerLambda(payload)
-    }
-  }
+
+  await sendVisitNotification(visitor)
+}
